@@ -6,9 +6,11 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Student;
 use Filament\Forms\Form;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\StudentResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -24,7 +26,16 @@ class StudentResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Select::make('class_id')
+                    ->relationship(name: 'class', titleAttribute: 'name'),
+                // Select::make('section_id')
+                //     ->relationship(name: 'section', titleAttribute: 'name'),
+                TextInput::make('name')
+                    ->autofocus()
+                    ->required(),
+                TextInput::make('email')
+                    ->unique()
+                    ->required(),
             ]);
     }
 
@@ -38,8 +49,11 @@ class StudentResource extends Resource
                 TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('class.name')->badge()->searchable(),
-                TextColumn::make('section.name')->badge(),
+                TextColumn::make('class.name')
+                    ->badge()
+                    ->searchable(),
+                TextColumn::make('section.name')
+                    ->badge(),
             ])
             ->filters([
                 //
