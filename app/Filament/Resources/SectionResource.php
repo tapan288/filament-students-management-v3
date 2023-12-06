@@ -39,6 +39,9 @@ class SectionResource extends Resource
                 TextColumn::make('name'),
                 TextColumn::make('class.name')
                     ->badge(),
+                TextColumn::make('students_count')
+                    ->counts('students')
+                    ->badge(),
             ])
             ->filters([
                 //

@@ -84,7 +84,9 @@ class StudentResource extends Resource
                             ->options(function (Get $get) {
                                 $classId = $get('class_id');
                                 if ($classId) {
-                                    return Section::where('class_id', $classId)->pluck('name', 'id')->toArray();
+                                    return Section::where('class_id', $classId)
+                                        ->pluck('name', 'id')
+                                        ->toArray();
                                 }
                             }),
                     ])
