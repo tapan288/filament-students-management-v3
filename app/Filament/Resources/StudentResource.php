@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
+use App\Models\Classes;
 use App\Models\Section;
 use App\Models\Student;
 use Filament\Forms\Get;
@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Exports\StudentsExport;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
@@ -69,7 +70,31 @@ class StudentResource extends Resource
                     ->badge(),
             ])
             ->filters([
-                //
+                Filter::make('class-section-filter')
+                    ->form([
+                        Select::make('class_id')
+                            ->label('Filter By Class')
+                            ->placeholder('Select a Class')
+                            ->options(
+                                Classes::pluck('name', 'id')->toArray(),
+                            ),
+                        Select::make('section_id')
+                            ->label('Filter By Section')
+                            ->placeholder('Select a Section')
+                            ->options(function (Get $get) {
+                                $classId = $get('class_id');
+                                if ($classId) {
+                                    return Section::where('class_id', $classId)->pluck('name', 'id')->toArray();
+                                }
+                            }),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when($data['class_id'], function ($query) use ($data) {
+                            return $query->where('class_id', $data['class_id']);
+                        })->when($data['section_id'], function ($query) use ($data) {
+                            return $query->where('section_id', $data['section_id']);
+                        });
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
