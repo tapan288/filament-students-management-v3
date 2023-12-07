@@ -5,11 +5,13 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Section;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Validation\Rules\Unique;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\SectionResource\Pages;
@@ -30,7 +32,10 @@ class SectionResource extends Resource
             ->schema([
                 Select::make('class_id')
                     ->relationship(name: 'class', titleAttribute: 'name'),
-                TextInput::make('name'),
+                TextInput::make('name')
+                    ->unique(ignoreRecord: true, modifyRuleUsing: function (Get $get, Unique $rule) {
+                        return $rule->where('class_id', $get('class_id'));
+                    }),
             ]);
     }
 
