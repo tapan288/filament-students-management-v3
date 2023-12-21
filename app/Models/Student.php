@@ -16,6 +16,11 @@ class Student extends Authenticatable
         'section_id',
         'name',
         'email',
+        'password'
+    ];
+
+    protected $casts = [
+        'password' => 'hashed',
     ];
 
     public function class ()

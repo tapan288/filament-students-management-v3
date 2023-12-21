@@ -56,6 +56,9 @@ class StudentResource extends Resource
                 TextInput::make('email')
                     ->unique()
                     ->required(),
+                TextInput::make('password')
+                    ->password()
+                    ->required(),
             ]);
     }
 
